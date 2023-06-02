@@ -1,7 +1,7 @@
 import pyperclip #run "pip install pyperclip" in terminal
 
 new_log = open("strippednwclientLog1.txt", "w")
-dm_name = "[DM Herald]" #Replace with your DM name here, along with brackets
+dm_name = "DM Herald" #Replace with your DM name here
 
 def speaker_detector():
     original_log = open("nwclientLog1.txt", "r")
@@ -22,7 +22,7 @@ def speaker_detector():
 def log_stripper(dm_name, player):
     original_log = open("nwclientLog1.txt", "r")
     for line in original_log:
-        if line.startswith(dm_name) or line.__contains__(player):
+        if line.startswith("["+ dm_name + "]") or line.__contains__(player):
             new_log.write(line)
     new_log.close()
     

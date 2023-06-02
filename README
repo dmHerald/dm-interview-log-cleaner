@@ -1,7 +1,7 @@
 Installation Instructions:
 1. Move the "Heralds Log Stripper Full Auto" script to your NWN logs directory, your "nwclientLog1" file should be in this directory.
 2. Install Python on your system (https://www.python.org/downloads/); be sure to enable PATH on install.
-3. Open the "Heralds Log Stripper Full Auto" script in Visual Studio Code and replace line 4 with your own DM name; be sure to include the square brackets.
+3. Open the "Heralds Log Stripper Full Auto" script in Visual Studio Code and replace line 4 with your own DM name.
 4. Open a new terminal and type "python --version" to ensure Python is correctly installed on your system.
 5. Type "pip install pyperclip" to install the Pyperclip library.
 6. Script is ready to use.
