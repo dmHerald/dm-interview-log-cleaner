@@ -8,7 +8,7 @@ player_name = input("Player/Character Name: ");
 def log_stripper(dm_name, player_name):
     original_log = open("nwclientLog1.txt", "r")
     for line in original_log:
-        if line.startswith("["+ dm_name + "]") or line.__contains__(player_name):
+        if line.__contains__(dm_name) or line.__contains__(player_name):
             new_log.write(line)
     new_log.close()
     
