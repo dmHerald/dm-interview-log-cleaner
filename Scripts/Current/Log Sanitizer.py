@@ -52,6 +52,13 @@ class LogSanitizerApp:
 
         ttk.Button(left_frame, text="Process Log", command=self.process_log).pack(pady=10)
 
+        # Search widgets
+        ttk.Label(left_frame, text="Search:").pack(pady=5)
+        self.search_entry = ttk.Entry(left_frame, width=30)
+        self.search_entry.pack(pady=5)
+        ttk.Button(left_frame, text="Search", command=self.search_log).pack(pady=5)
+        ttk.Button(left_frame, text="Clear Search", command=self.clear_search).pack(pady=5)
+
         ttk.Button(left_frame, text="Help", command=self.show_help).pack(pady=10)
 
         # Right frame widgets
@@ -187,7 +194,7 @@ class LogSanitizerApp:
             dm_pattern = re.compile(rf'(?:^|\s){re.escape(dm_name)}(?:\s|:)')  # Pattern to detect DM name
             player_pattern = re.compile(rf'(?:^|\s)\[?{re.escape(player)}\]?')  # Pattern to detect player name with or without brackets
             tell_pattern = re.compile(r'\[Tell\]')  # Pattern to detect [Tell] tag
-            
+
             with codecs.open(input_file, "r", encoding="utf-8", errors="replace") as original_log:
                 for line in original_log:
                     # Check if line contains DM name, player name, or [Tell] tag
@@ -200,11 +207,50 @@ class LogSanitizerApp:
             messagebox.showerror("Error", f"Error processing file: {e}")
             return None
 
+    def search_log(self):
+        search_term = self.search_entry.get().lower()
+        if not search_term:
+            messagebox.showwarning("Warning", "Please enter a search term.")
+            return
+
+        content = self.output_text.get('1.0', tk.END)
+        if not content.strip():
+            messagebox.showwarning("Warning", "No content to search. Please process a log first.")
+            return
+
+        # Clear previous highlighting
+        self.output_text.tag_remove('search_highlight', '1.0', tk.END)
+
+        # Search and highlight
+        start_pos = '1.0'
+        while True:
+            start_pos = self.output_text.search(search_term, start_pos, stopindex=tk.END, nocase=1)
+            if not start_pos:
+                break
+            end_pos = f"{start_pos}+{len(search_term)}c"
+            self.output_text.tag_add('search_highlight', start_pos, end_pos)
+            start_pos = end_pos
+
+        self.output_text.tag_config('search_highlight', background='yellow', foreground='black')
+
+        # Scroll to the first occurrence
+        self.output_text.see('search_highlight.first')
+
+        # Count occurrences
+        occurrences = len(self.output_text.tag_ranges('search_highlight')) // 2
+        if occurrences > 0:
+            messagebox.showinfo("Search Results", f"Found {occurrences} occurrence(s) of '{search_term}'.")
+        else:
+            messagebox.showinfo("Search Results", f"No occurrences of '{search_term}' found.")
+
+    def clear_search(self):
+        self.output_text.tag_remove('search_highlight', '1.0', tk.END)
+        self.search_entry.delete(0, tk.END)
+
     def show_help(self):
-        # Create a new window for help information
         help_window = tk.Toplevel(self.master)
         help_window.title("Help")
-        help_window.geometry("400x300")
+        help_window.geometry("400x400")
 
         help_text = """Welcome to the Log Sanitizer Help!
 
@@ -215,6 +261,11 @@ class LogSanitizerApp:
 3. Click "Select Input File" to choose the log file you wish to sanitize.
 4. Click "Process Log" to sanitize the log.
 5. The sanitized log will appear on the right. You can copy it to the clipboard.
+6. To search within the processed log:
+   - Enter a search term in the Search field.
+   - Click "Search" to highlight matching lines in the log.
+   - Use "Clear Search" to remove highlighting.
+7. Use "Copy Log to Clipboard" to copy the entire sanitized log.
 
 If you have any issues, please contact DM Herald."""
 
