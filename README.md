@@ -19,3 +19,6 @@
 3. Click on "Process Log".
 4. Click on "Copy Log to Clipboard" at the bottom of the screen.
 5. Sanitized logs are now ready to be attached to a case file on the Astrolabe.
+
+## Additional Feature(s):
+1. To search for specific phrases, enter the phrase in the search box and click "Search". The search is case insensitive and will highlight all results in the stripped logs matching the query. To clear the highlighting, click on the "Clear Search" button.
